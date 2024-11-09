@@ -199,6 +199,67 @@ fpr<- function(y, predy, v){
   }
   return(fpr)
 }
+
+tpr_n <- function(s, X, beta, v){
+  yhat <- plogis(X %*% beta)
+  tpr <- numeric(length(v))
+  for (j in 1:length(v)){ 
+    ind1 <- (yhat>=v[j])
+    ind2<- (s==0)
+    ind3<- (s==1)
+    pl0=mean(ind1*ind2)
+    pl1=mean(ind1*ind3)
+    tpr[j]=pl1/mean(ind3)
+  }
+  return(tpr)
+}
+fpr_n <- function(s, X, beta, v){
+  yhat <- plogis(X %*% beta)
+  q=mean(yhat)
+  h=mean(s)
+  fpr <- numeric(length(v))
+  for (j in 1:length(v)){ 
+    ind1 <- (yhat>=v[j])
+    ind2<- (s==0)
+    ind3<- (s==1)
+    pl0=mean(ind1*ind2)
+    pl1=mean(ind1*ind3)
+    fpr[j]=pl0/(1-q)-pl1*(q-h)/(h*(1-q))
+  }
+  return(fpr)
+} 
+ppv_n <- function(s, X, beta, v){
+  yhat <- plogis(X %*% beta)
+  q=mean(yhat)
+  h=mean(s)
+  ppv <- numeric(length(v))
+  for (j in 1:length(v)){ 
+    ind1 <- (yhat>=v[j])
+    ind2<- (s==0)
+    ind3<- (s==1)
+    pl0=mean(ind1*ind2)
+    pl1=mean(ind1*ind3)
+    ppv[j]=pl1/pl0*(q-h)/h
+  }
+  return(ppv)
+} 
+npv_n <- function(s, X, beta, v){
+  yhat <- plogis(X %*% beta)
+  q=mean(yhat)
+  h=mean(s)
+  npv <- numeric(length(v))
+  for (j in 1:length(v)){ 
+    ind1 <- (yhat>=v[j])
+    ind2<- (s==0)
+    ind3<- (s==1)
+    ind4=1-ind1
+    npl0=mean(ind4*ind2)
+    npl1=mean(ind4*ind3)
+    npv[j]=1-npl1/npl0*(q-h)/h
+  }
+  return(npv)
+}
+
 #######################################################
 #Inference for accuracy measure function###############
 #######################################################
